@@ -1,4 +1,5 @@
 
+```python
 def solution(N, number):
     S = [{N}]
     for i in range(2, 9):
@@ -16,4 +17,6 @@ def solution(N, number):
             return i
         S.append(lst)
     return -1
-
+```
+---
+출처: 프로그래머스
