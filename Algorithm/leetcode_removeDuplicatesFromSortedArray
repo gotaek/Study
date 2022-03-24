@@ -1,0 +1,11 @@
+```python
+from collections import Counter
+class Solution:
+    def removeDuplicates(self, nums: List[int]) -> int:
+        nums_dict=dict(Counter(nums))
+        length=len(nums_dict)
+        for i,key in zip(range(length),nums_dict.keys()):
+            nums[i]=key
+            
+        return length
+```
