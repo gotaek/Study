@@ -169,3 +169,44 @@ auto-fit을 사용하면 빈공간이 없도록 요소를 stretch한다. 위의 
 ```
 
 `grid-column-start`, `grid-column-end`, `grid-row-start`, `grid-row-end`를 사용해 각 요소들이 위치해아 하는 공간을 그리드 번호로 지정한다.
+	
+	# align-items, justify-items, place-items
+
+그리드 아이템들을 그리드 셀 안에서 어떻게 배치할 지에 대한 속성으로 그리드 컨테이너에 적용해주는 속성이다. 기본 값은 stretch로 그리드 셀의 넓이나 크기만큼 쭉 늘린다. 그 외의 값으로는 start, end, center가 있다. 
+
+```css
+.container {
+	align-items: center;
+	justify-items: center;
+}
+```
+
+이렇게 CSS를 작성하면 그리드 셀 내에서 중간에 위치하도록 한다. place-items를 사용해 다음처럼 축약할 수 있다. align-items, justify-items의 순서이다.
+
+```css
+.container{
+	place-items: center center;
+}
+```
+
+# align-content, justify-content, place-content
+
+Grid 아이템들의 높이를 모두 합한 값이 Grid 컨테이너의 높이보다 작을 때 Grid 아이템들을 통째로 정렬할 수 있는 속성이 align-content, justify-content이다. 그리드 컨테이너에 적용하는 속성이다. flex에서 justify-content: space-around를 정했던 것 처럼 그리드에서도 space-between, space-around, space-evenly를 사용할 수 있다.
+
+지금까지 그래왔던 것처럼 align-content는 세로 그룹, justify-content는 가로 그룹의 정렬이다. 이도 place-content로 축약할 수 있다. place-items에서 처럼 align, justify 순이다.
+
+# align-self, justify-self, place-self
+
+각 그리드 아이템을 개별적으로 조절할 수 있는 속성이다. 그리드 컨테이너에 사용하는 속성이 아니라 그리드 아이템에 적용하는 속성이다. 
+
+# order
+
+flex에서도 order를 사용한 것과 같이 grid에서도 똑같이 사용된다. grid 레이아웃을 만들었으면 각 요소에 order속성을 줄 수있는데 order의 값이 작은 순서대로 만든 레이아웃에 배치된다.
+
+---
+
+출처
+
+[https://studiomeal.com/archives/533](https://studiomeal.com/archives/533)
+
+[https://developer.mozilla.org/ko/docs/Web/CSS/CSS_Grid_Layout](https://developer.mozilla.org/ko/docs/Web/CSS/CSS_Grid_Layout)
