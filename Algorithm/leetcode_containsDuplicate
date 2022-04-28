@@ -1,0 +1,11 @@
+```python
+class Solution:
+    def containsDuplicate(self, nums: List[int]) -> bool:
+        listA={}
+        for num in nums:
+            if num in listA:
+                return True
+            else:
+                listA[num]=1
+        return False
+```
