@@ -33,4 +33,150 @@ SCSS는 Sass의 버전 3에서 등장한 문법으로 세미콜론과 중괄호�
 }
 ```
 
+# SCSS
+
+## variable&nesting
+
+scss폴더에 _variables.scss파일을 생성
+
+```scss
+$bg: red; /*변수 설정*/
+```
+
+```scss
+@import "_variables";
+
+h2{
+	color:$bg;
+}
+/* nesting */
+.box{
+	&:hover{
+		background:green;
+	}
+	margin-top:20px;
+	h2{
+		color:blue;
+	}
+	button{
+		color:red;
+	}
+}
+
+```
+
+## Mixins
+
+scss functionality를 재사용할 수 있도록 함
+
+어떤 종류의 arguments를 mixin에 보낼 때 사용
+
+즉, 상황에 따라 다르게 코딩을 하고 싶으면 사용
+
+### 예시 1
+
+_mixins.scss파일을 생성
+
+```scss
+@mixin link($color) {
+  text-decoration:none;
+	display:block
+	color:$color/*변수를 통해 설정 가능*/
+}
+```
+
+```scss
+@mixin link($word){
+	text-decoration:none;
+	display:block;
+	@if $word=='odd'{
+		color:blue;
+	}@else{
+		color:red;
+	}
+}
+```
+
+```scss
+.box{
+	@include link('odd')
+}
+```
+
+### 예시 2 (responsive)
+
+```scss
+$minIphone: 500px;
+$maxIphone: 690px;
+$minTablet: $minIphone + 1;
+$maxTablet: 1120px;
+
+@mixin responsive($device) {
+  @if $device == "iphone" {
+    @media screen and (min-width: $minIphone) and (max-width: $maxIphone) {
+      @content;
+    }
+  } @else if $device == "tablet" {
+    @media screen and (min-width: $minTablet) and (max-width: $maxTablet) {
+      @content;
+    }
+  } @else if $device == "iphone-l" {
+    @media screen and (max-width: $minIphone) and (max-width: $maxIphone) and (orientation: landscape) {
+      @content;
+    }
+  } @else if $device == "ipad-l" {
+    @media screen and (min-width: $minTablet) and (max-width: $maxTablet) and (orientation: landscape) {
+      @content;
+    }
+  }
+}
+```
+
+```scss
+@import "_mixins";
+
+h1 {
+  color: red;
+  @include responsive("iphone") {
+    color: yellow;
+  }
+  @include responsive("iphone-l") {
+    font-size: 60px;
+  }
+  @include responsive("tablet") {
+    color: green;
+  }
+}
+```
+
+## Extends
+
+같은 코드를 중복하고 싶지 않을 때 사용
+
+다른 코드를 확장하거나 코드를 재사용하려고 할 때 사용
+
+_buttons.scss 생성
+```scss
+@import "_buttons"
+a{
+	@extend:%button;
+	text-decoration:none;
+}
+button{
+	@extend:%button;
+	border:none;
+}
+```
+```scss
+@import "_buttons"
+a{
+	@extend:%button;
+	text-decoration:none;
+}
+button{
+	@extend:%button;
+	border:none;
+}
+```
+
 [https://heropy.blog/2018/01/31/sass/](https://heropy.blog/2018/01/31/sass/)
