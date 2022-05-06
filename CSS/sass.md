@@ -179,4 +179,223 @@ Sass는 기본적인 연산 기능을 지원한다. `+`, `-`, `*`, `/`, `%` 산�
 
 `/` 나누기 연산을 할 때는 오류가 날 수도 있으니 괄호를 사용하도록 하자
 
+## Mixin
+
+mixin은 재사용 할 CSS 선언 그룹을 정의하는 기능으로 유용하게 사용되는 기능이다. @mixin으로 선언하고 @include로 사용한다.
+
+```css
+@mixin large-text {
+  font-size: 22px;
+  font-weight: bold;
+  font-family: sans-serif;
+  color: orange;
+}
+
+h1{
+	@include large-text;
+}
+```
+
+---
+
+mixin은 인수를 가질 수 있는데 형태는 함수를 사용하는 것과 비슷하다. 예시를 통해 알아보자. mixin에 문자열을 인수로 전달하고 mixin은 인수를 확인하여 상황에 맞게 스타일을 지정하는 예시이다. 
+
+```scss
+@mixin link($word:'even'){
+	text-decoration:none;
+	display:block;
+	@if $word=='odd'{
+		color:blue;
+	}@else{
+		color:red;
+	}
+}
+
+.box{
+	@include link('odd');
+}
+```
+
+이때 `@mixin link ($word)`이렇게만 지정해줘도 인수를 받을 수 있는데 `:`를 사용한 이유는 기본값을 설정한 것이기 때문이다 `:`후에 어떤 값을 설정하면 인수가 지정되지 않고 include될 때 기본값으로 인수가 전달된다. 
+
+---
+
+```scss
+@mixin 믹스인이름($매개변수A: 기본값, $매개변수B: 기본값) {
+  스타일;
+}
+
+@include 믹스인이름($매개변수B: 인수);
+```
+
+위와 같이 include할 때 명시적으로 키워드를 입력하여 작성할 수 있는 키워드 인수를 사용할 수도 있다. 
+
+---
+
+```scss
+@mixin 믹스인이름($매개변수...) {
+  스타일;
+}
+
+@include 믹스인이름(인수A, 인수B, 인수C);
+```
+
+또한 입력할 인수의 개수가 불확실한 경우에 mixin 선언시 인수 뒤에 `...`을 붙여두면 가변인수가 되어 개수에 상관없이 전달된다. 
+
+---
+
+만약 선언된 mixin에 `@content`가 포함되어 있다면 해당 부분에 서로 다른 스타일을 추가할 수 있다. 
+
+```scss
+@mixin icon($url) {
+  &::after {
+    content: $url;
+    @content;
+  }
+}
+.icon1 {
+  // icon Mixin의 기존 기능만 사용
+  @include icon("/images/icon.png");
+}
+.icon2 {
+  // icon Mixin에 스타일 블록을 추가하여 사용
+  @include icon("/images/icon.png") {
+    position: absolute;
+  };
+}
+```
+
+```css
+.icon1::after {
+  content: "/images/icon.png";
+}
+.icon2::after {
+  content: "/images/icon.png";
+  position: absolute;
+}
+```
+
+`@include`할 때 새로운 속성들을 지정하여 mixin의 `@content`에 별도로 추가되도록 하는 것이다. 
+
+## Extend
+
+특정 선택자가 다른 선택자의 모든 속성을 가져야 할 때 중복을 피하기 위해 사용하는 기능이다. 
+
+```scss
+%button{
+	border-radius:7px;
+	font-size:12px;
+	text-transform:uppercase;
+	padding:5px 10px;
+}
+
+a{
+	@extend:%button;
+	text-decoration:none;
+}
+button{
+	@extend:%button;
+	border:none;
+}
+```
+
+## Functions
+
+mixin을 보고 이게 다른 프로그래밍 언어의 함수와 같은 것이구나라고 생각할 수 있지만 Scss에는 별도로 함수가 존재한다. 
+
+mixin은 지정한 스타일을 반환하는 반면 함수는 계산된 값을 `@return` 을 통해 반환된다. 또 mixin을 사용하기 위해서는 `@include`를 사용해야 했지만 function을 사용할 때에는 우리가 익히 알고있는 대로 `함수이름(인수)`로 사용하면 된다.
+
+```scss
+$max-width: 980px;
+
+@function columns($number: 1, $columns: 12) {
+  @return $max-width * ($number / $columns)
+}
+
+.box_group {
+  width: $max-width; //980px
+
+  .box1 {
+    width: columns(); //81.66667px
+  }
+  .box2 {
+    width: columns(8); //653.33333px
+  }
+  .box3 {
+    width: columns(3); //245px
+  }
+}
+```
+
+## if
+
+일반적인 프로그래밍 언어처럼 Scss에서도 조건문을 사용할 수 있다. `if(조건, 표현식1, 표현식2)` 이런 방식으로 사용할 수도 있고, 아래처럼 아예 분기처리를 할 수도 있다. 이때 괄호는 생략이 가능하다. 
+
+```scss
+@if (조건){
+
+}@else if (조건2){
+
+}@else{
+
+}
+```
+
+## for
+
+반복문을 사용할 수도 있는데 `through`를 사용하는 형식과 `to`를 사용하는 형식이 존재한다. `through`는 마지막을 포함하고, `to`는 마지막 직전까지만 반복한다.
+
+```scss
+/* 5번 반복 */
+@for $i from 1 through 5 {
+  .through:nth-child(#{$i}) {
+    width : 20px * $i
+  }
+}
+
+/* 4번 반복 */
+@for $i from 1 to 5 {
+  .to:nth-child(#{$i}) {
+    width : 20px * $i
+  }
+}
+```
+
+## each
+
+@each는 List형식과 Map 데이터를 반복하고자 할 때 사용한다. 
+
+List형식은 `(a,b,c)` , `a b` 처럼 공백이나 ,로 구분된 값의 목록이다. 
+
+Map 형식은 파이썬의 dictionary처럼 key:value 형태로 되어 있다. `(a:1, b:2, c:3)`
+
+List 형식의 데이터를 아래와 같이 사용하면 여러가지 이미지를 편리하게 작업할 수 있다. 
+
+```scss
+$fruits: (apple, orange, banana, mango);
+
+.fruits {
+  @each $fruit in $fruits {
+    li.#{$fruit} {
+      background: url("/images/#{$fruit}.png");
+    }
+  }
+}
+```
+
+Map 형식의 데이터를 반복할 경우에는 하나의 데이터에 두 개의 변수가 필요하다.
+
+```scss
+$fruits-data: (apple: korea, orange: china, banana: japan);
+
+@each $fruit, $country in $fruits-data {
+  .box-#{$fruit} {
+    background: url("/images/#{$country}.png");
+  }
+}
+```
+
+출처
+
+[https://heropy.blog/2018/01/31/sass/](https://heropy.blog/2018/01/31/sass/)
 [https://heropy.blog/2018/01/31/sass/](https://heropy.blog/2018/01/31/sass/)
